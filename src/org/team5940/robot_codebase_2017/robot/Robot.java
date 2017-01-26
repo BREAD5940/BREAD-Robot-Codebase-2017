@@ -23,4 +23,10 @@ public class Robot extends RobotModule {
 		
 	}
 
+	@Override
+	protected void createSubmodules() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
