@@ -80,7 +80,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should have shifting, overridden by {@link RobotConfig#enablePneumatics}.
 	 */
-	public static final boolean enableShifting = enablePneumatics && true;//DEFAULT: true
+	public static final boolean enableShifter = enablePneumatics && true;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should control the cup, overridden by {@link RobotConfig#enablePneumatics} and {@link RobotConfig#enableArm}.
