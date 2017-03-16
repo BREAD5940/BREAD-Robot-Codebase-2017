@@ -9,7 +9,7 @@ import org.team5940.robot_core.modules.sensors.axes.AxisModule;
 import org.team5940.robot_core.modules.sensors.selectors.SelectorModule;
 
 //TODO
-public final class DriveUpdateProcedure extends AbstractProcedureModule {
+public final class DriveUpdateProcedureModule extends AbstractProcedureModule {
 
 	private final TankDrivetrainModule drivetrain;
 	private final AxisModule forwardAxis;
@@ -17,15 +17,15 @@ public final class DriveUpdateProcedure extends AbstractProcedureModule {
 	private final SelectorModule direction;
 	
 	//TODO
-	public DriveUpdateProcedure(LoggerModule logger, TankDrivetrainModule drivetrain, AxisModule forwardAxis, AxisModule yawAxis, SelectorModule direction)
+	public DriveUpdateProcedureModule(LoggerModule logger, TankDrivetrainModule drivetrain, AxisModule forwardAxis, AxisModule yawAxis, SelectorModule direction)
 			throws IllegalArgumentException {
 		super("drive_update_procedure", new ModuleHashtable<>(new Module[]{drivetrain, forwardAxis, yawAxis, direction}), logger);
-		this.logger.checkInitializationArgs(this, DriveUpdateProcedure.class, new Object[]{drivetrain, forwardAxis, yawAxis, direction});
+		this.logger.checkInitializationArgs(this, DriveUpdateProcedureModule.class, new Object[]{drivetrain, forwardAxis, yawAxis, direction});
 		this.drivetrain = drivetrain;
 		this.forwardAxis = forwardAxis;
 		this.yawAxis = yawAxis;
 		this.direction = direction;
-		this.logger.logInitialization(this, DriveUpdateProcedure.class, new Object[]{drivetrain, forwardAxis, yawAxis, direction});
+		this.logger.logInitialization(this, DriveUpdateProcedureModule.class, new Object[]{drivetrain, forwardAxis, yawAxis, direction});
 		
 	}
 

@@ -3,9 +3,10 @@ package org.team5940.robot_codebase_2017.robot;
 import java.io.File;
 
 import org.team5940.robot_codebase_2017.modules.ArmModule;
-import org.team5940.robot_codebase_2017.modules.DriveUpdateProcedure;
+import org.team5940.robot_codebase_2017.modules.DriveUpdateProcedureModule;
 import org.team5940.robot_codebase_2017.modules.ScalerMotorSetModule;
-import org.team5940.robot_codebase_2017.modules.ShifterUpdateProcedure;
+import org.team5940.robot_codebase_2017.modules.ShifterUpdateProcedureModule;
+import org.team5940.robot_codebase_2017.modules.auto_procedures.ForwardAutoProcedureModule;
 import org.team5940.robot_core.modules.ModuleHashtable;
 import org.team5940.robot_core.modules.RobotModule;
 import org.team5940.robot_core.modules.actuators.motor_sets.CANTalonMotorSetModule;
@@ -35,6 +36,7 @@ import org.team5940.robot_core.modules.sensors.binary_input.HIDButtonBinaryInput
 import org.team5940.robot_core.modules.sensors.binary_input.TogglingBinaryInputModule;
 import org.team5940.robot_core.modules.sensors.selectors.BinarySelectorModule;
 import org.team5940.robot_core.modules.sensors.selectors.SelectorModule;
+import org.team5940.robot_core.modules.sensors.selectors.SmartDashboardSelectorModule;
 import org.team5940.robot_core.modules.testing.TestableModule;
 import org.team5940.robot_core.modules.testing.communication.SmartDashboardTestCommunicationModule;
 import org.team5940.robot_core.modules.testing.communication.TestCommunicationModule;
@@ -218,6 +220,13 @@ public class Robot extends RobotModule {
 			testable.chainPut(cupExtendedButton).chainPut(cupContractedButton);
 		}
 		
+		//AUTO SELECTOR
+		System.out.println("AUTO SELECTOR");
+		SelectorModule autoSelector;
+		if(RobotConfig.enableAuto) {
+			autoSelector = new SmartDashboardSelectorModule("auto_selector", logger, new String[]{"None", "Forward"}, 1);
+			testable.put(autoSelector);
+		}
 		
 		//OPERATOR CAMERAS
 		System.out.println("OPERATOR CAMERAS");
@@ -237,9 +246,9 @@ public class Robot extends RobotModule {
 		System.out.println("STANDARD OPCON");
 		ModuleHashtable<ProcedureModule> opConProcedures = new ModuleHashtable<>();
 		if(RobotConfig.enableDrivetrain)
-			opConProcedures.put(new DriveUpdateProcedure(logger, drivetrain, forwardAxis, yawAxis, robotDirectionSelector));
+			opConProcedures.put(new DriveUpdateProcedureModule(logger, drivetrain, forwardAxis, yawAxis, robotDirectionSelector));
 		if(RobotConfig.enableShifter)
-			opConProcedures.put(new ShifterUpdateProcedure(logger, shifter, shiftUpButton, shiftDownButton));
+			opConProcedures.put(new ShifterUpdateProcedureModule(logger, shifter, shiftUpButton, shiftDownButton));
 		ProcedureModule opConAggregateProcedure = new AggregateProcedureModule("opcon_aggregate_procedure", logger, opConProcedures, true);
 		//TESTING
 		System.out.println("TESTING");
@@ -259,9 +268,15 @@ public class Robot extends RobotModule {
 			opConProcedure = new SingleShotSelectableProcedureModule("opcon_procedure", logger, testingSelector, opConAggregateProcedure, new ProcedureModule[]{opConAggregateProcedure, testingProcedure}, true);
 		else
 			opConProcedure = opConAggregateProcedure;
+		//AUTO
+		ProcedureModule autoProcedure = ProcedureModule.INERT_PROCEDURE;
+		if(RobotConfig.enableAuto) {
+			ProcedureModule forwardAutoProcedure = new ForwardAutoProcedureModule(logger, drivetrain);
+			autoProcedure = new SingleShotSelectableProcedureModule("auto_procedure", logger, autoSelector, ProcedureModule.INERT_PROCEDURE, new ProcedureModule[]{ProcedureModule.INERT_PROCEDURE, forwardAutoProcedure}, true);
+		}
 		//ROBOT PROCEDURE
 		System.out.println("ROBOT PROCEDURE");
-		this.createRobotProcedure(logger, ProcedureModule.INERT_PROCEDURE, ProcedureModule.INERT_PROCEDURE, opConProcedure, ProcedureModule.INERT_PROCEDURE);
+		this.createRobotProcedure(logger, ProcedureModule.INERT_PROCEDURE, autoProcedure, opConProcedure, ProcedureModule.INERT_PROCEDURE);
 		
 	}
 

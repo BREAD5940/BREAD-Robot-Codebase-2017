@@ -8,7 +8,7 @@ import org.team5940.robot_core.modules.logging.LoggerModule;
 import org.team5940.robot_core.modules.sensors.binary_input.BinaryInputModule;
 
 //TODO docs
-public final class ShifterUpdateProcedure extends AbstractProcedureModule {
+public final class ShifterUpdateProcedureModule extends AbstractProcedureModule {
 	
 	//TODO docs
 	private final ShifterModule shifter;
@@ -16,14 +16,14 @@ public final class ShifterUpdateProcedure extends AbstractProcedureModule {
 	private final BinaryInputModule shiftDown;
 	
 	//TODO docs
-	public ShifterUpdateProcedure(LoggerModule logger, ShifterModule shifter, BinaryInputModule shiftUp, BinaryInputModule shiftDown)
+	public ShifterUpdateProcedureModule(LoggerModule logger, ShifterModule shifter, BinaryInputModule shiftUp, BinaryInputModule shiftDown)
 			throws IllegalArgumentException {
 		super("shifter_update_procedure", new ModuleHashtable<Module>().chainPut(shifter).chainPut(shiftUp).chainPut(shiftDown), logger);
-		this.logger.checkInitializationArgs(this, ShifterUpdateProcedure.class, new Object[]{shifter, shiftUp, shiftDown});
+		this.logger.checkInitializationArgs(this, ShifterUpdateProcedureModule.class, new Object[]{shifter, shiftUp, shiftDown});
 		this.shifter = shifter;
 		this.shiftUp = shiftUp;
 		this.shiftDown = shiftDown;
-		this.logger.logInitialization(this, ShifterUpdateProcedure.class, new Object[]{shifter, shiftUp, shiftDown});
+		this.logger.logInitialization(this, ShifterUpdateProcedureModule.class, new Object[]{shifter, shiftUp, shiftDown});
 	}
 
 	@Override
