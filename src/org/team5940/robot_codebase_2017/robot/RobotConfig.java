@@ -12,7 +12,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should log to the Riolog.
 	 */
-	public static final boolean enableRiolog = true;//DEFAULT: false
+	public static final boolean enableRiolog = true;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should have a verbose Riologging.
@@ -22,12 +22,12 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should log to files.
 	 */
-	public static final boolean enableFileLog = true;//DEFAULT: true
+	public static final boolean enableFileLog = false;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should have a verbose file logging.
 	 */
-	public static final boolean enableVerboseFileLog = true;//DEFAULT: false
+	public static final boolean enableVerboseFileLog = true;//DEFAULT: true
 	
 	//CONTROL
 	/**
@@ -59,17 +59,22 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should control the arm, overridden by {@link RobotConfig#isCiabatta}.
 	 */
-	public static final boolean enableArm = isCiabatta && false;//DEFAULT: true
+	public static final boolean enableArm = isCiabatta && true;//DEFAULT: true
+	
+	/**
+	 * Configures whether the robot should control the intake, overridden by {@link RobotConfig#isCiabatta}.
+	 */
+	public static final boolean enableIntake = isCiabatta && true;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should control the scaler, overridden by {@link RobotConfig#isCiabatta}.
 	 */
-	public static final boolean enableScaler = isCiabatta && false;//DEFAULT: true
+	public static final boolean enableScaler = isCiabatta && true;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should stream operator cameras.
 	 */
-	public static final boolean enableOpCams = false;//DEFAULT: true
+	public static final boolean enableOpCams = true;//DEFAULT: true
 	
 	//PNEUMATICS
 	/**
