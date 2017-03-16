@@ -1,7 +1,7 @@
 package org.team5940.robot_codebase_2017.robot;
 
 public class RobotConfig {
-
+	
 	//ROBOT TYPE
 	/**
 	 * Stores whether this is Ciabatta or not, automatically disables features when testing on Focaccia.
@@ -17,7 +17,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should have a verbose Riologging.
 	 */
-	public static final boolean enableVerboseRiolog = false;//DEFAULT: false
+	public static final boolean enableVerboseRiolog = true;//DEFAULT: false
 	
 	/**
 	 * Configures whether the robot should log to files.
@@ -59,12 +59,12 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should control the arm, overridden by {@link RobotConfig#isCiabatta}.
 	 */
-	public static final boolean enableArm = isCiabatta && true;//DEFAULT: true
+	public static final boolean enableArm = isCiabatta && false;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should control the scaler, overridden by {@link RobotConfig#isCiabatta}.
 	 */
-	public static final boolean enableScaler = isCiabatta && true;//DEFAULT: true
+	public static final boolean enableScaler = isCiabatta && false;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should stream operator cameras.
@@ -78,13 +78,13 @@ public class RobotConfig {
 	public static final boolean enablePneumatics = true;//DEFAULT: true
 	
 	/**
-	 * Configures whether the robot should have shifting, overridden by {@link RobotConfig#enablePneumatics}.
+	 * Configures whether the robot should have shifting, overridden by {@link RobotConfig#enableDrivetrain} and {@link RobotConfig#enablePneumatics}.
 	 */
-	public static final boolean enableShifter = enablePneumatics && true;//DEFAULT: true
+	public static final boolean enableShifter = enableDrivetrain && enablePneumatics && true;//DEFAULT: true
 	
 	/**
-	 * Configures whether the robot should control the cup, overridden by {@link RobotConfig#enablePneumatics} and {@link RobotConfig#enableArm}.
+	 * Configures whether the robot should control the cup, overridden by {@link RobotConfig#isCiabatta}, {@link RobotConfig#enablePneumatics}, and {@link RobotConfig#enableArm}.
 	 */
-	public static final boolean enableCup = enablePneumatics && enableArm && true;//DEFAULT: true
+	public static final boolean enableCup = isCiabatta && enablePneumatics && enableArm && true;//DEFAULT: true
 	
 }
