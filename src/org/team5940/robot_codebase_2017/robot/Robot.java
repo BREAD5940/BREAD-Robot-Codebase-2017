@@ -5,6 +5,7 @@ import java.io.File;
 import org.team5940.robot_codebase_2017.modules.ArmModule;
 import org.team5940.robot_codebase_2017.modules.DriveUpdateProcedure;
 import org.team5940.robot_codebase_2017.modules.ScalerMotorSetModule;
+import org.team5940.robot_codebase_2017.modules.ShifterUpdateProcedure;
 import org.team5940.robot_core.modules.ModuleHashtable;
 import org.team5940.robot_core.modules.RobotModule;
 import org.team5940.robot_core.modules.actuators.motor_sets.CANTalonMotorSetModule;
@@ -178,13 +179,25 @@ public class Robot extends RobotModule {
 		ModuleHashtable<ProcedureModule> opConProcedures = new ModuleHashtable<>();
 		if(RobotConfig.enableDrivetrain)
 			opConProcedures.put(new DriveUpdateProcedure(logger, drivetrain, forwardAxis, yawAxis, robotDirectionSelector));
+		if(RobotConfig.enableShifter)
+			opConProcedures.put(new ShifterUpdateProcedure(logger, shifter, shiftUpButton, shiftDownButton));
 		ProcedureModule opConAggregateProcedure = new AggregateProcedureModule("opcon_aggregate_procedure", logger, opConProcedures, true);
 		//TESTING
-		TestCommunicationModule comms = new SmartDashboardTestCommunicationModule("test_communications", logger, "TESTING:", "RETURN:");
-		ProcedureModule testingProcedure = new MultipleTestRunnerProcedureModule("testing_procedure", logger, testable, comms);
+		TestCommunicationModule comms;
+		ProcedureModule testingProcedure;
+		SelectorModule testingSelector;
+		if(RobotConfig.enableTesting) {
+			comms = new SmartDashboardTestCommunicationModule("test_communications", logger, "TESTING:", "RETURN:");
+			testingProcedure = new MultipleTestRunnerProcedureModule("testing_procedure", logger, testable, comms);
+			testingSelector = new BinarySelectorModule("testing_selector", logger, directionSwapButton);
+			testable.put(testingSelector);
+		}
 		//COMBINED OPCON
-		SelectorModule testingSelector = new BinarySelectorModule("testing_selector", logger, directionSwapButton);
-		ProcedureModule opConProcedure = new SingleShotSelectableProcedureModule("opcon_procedure", logger, testingSelector, opConAggregateProcedure, new ProcedureModule[]{opConAggregateProcedure, testingProcedure}, true);
+		ProcedureModule opConProcedure;
+		if(RobotConfig.enableTesting)
+			opConProcedure = new SingleShotSelectableProcedureModule("opcon_procedure", logger, testingSelector, opConAggregateProcedure, new ProcedureModule[]{opConAggregateProcedure, testingProcedure}, true);
+		else
+			opConProcedure = opConAggregateProcedure;
 		//ROBOT PROCEDURE
 		this.createRobotProcedure(logger, ProcedureModule.INERT_PROCEDURE, ProcedureModule.INERT_PROCEDURE, opConProcedure, ProcedureModule.INERT_PROCEDURE);
 		

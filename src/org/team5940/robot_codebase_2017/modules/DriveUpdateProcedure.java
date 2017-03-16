@@ -9,7 +9,7 @@ import org.team5940.robot_core.modules.sensors.axes.AxisModule;
 import org.team5940.robot_core.modules.sensors.selectors.SelectorModule;
 
 //TODO
-public class DriveUpdateProcedure extends AbstractProcedureModule {
+public final class DriveUpdateProcedure extends AbstractProcedureModule {
 
 	private final TankDrivetrainModule drivetrain;
 	private final AxisModule forwardAxis;
@@ -41,6 +41,7 @@ public class DriveUpdateProcedure extends AbstractProcedureModule {
 			yaw = -yaw;
 		}
 		this.logger.vLog(this, "Updating Drivetrain", new Object[]{forward, yaw});
+		this.drivetrain.updateArcade(forward, yaw);
 		return false;
 	}
 

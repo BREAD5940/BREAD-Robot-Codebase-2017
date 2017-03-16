@@ -17,7 +17,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should have a verbose Riologging.
 	 */
-	public static final boolean enableVerboseRiolog = true;//DEFAULT: false
+	public static final boolean enableVerboseRiolog = false;//DEFAULT: false
 	
 	/**
 	 * Configures whether the robot should log to files.
@@ -69,7 +69,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should stream operator cameras.
 	 */
-	public static final boolean enableOpCams = true;//DEFAULT: true
+	public static final boolean enableOpCams = false;//DEFAULT: true
 	
 	//PNEUMATICS
 	/**
