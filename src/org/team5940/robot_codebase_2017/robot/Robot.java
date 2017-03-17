@@ -3,10 +3,12 @@ package org.team5940.robot_codebase_2017.robot;
 import java.io.File;
 
 import org.team5940.robot_codebase_2017.modules.ArmModule;
-import org.team5940.robot_codebase_2017.modules.DriveUpdateProcedureModule;
 import org.team5940.robot_codebase_2017.modules.ScalerMotorSetModule;
-import org.team5940.robot_codebase_2017.modules.ShifterUpdateProcedureModule;
 import org.team5940.robot_codebase_2017.modules.auto_procedures.ForwardAutoProcedureModule;
+import org.team5940.robot_codebase_2017.modules.opcon_procedures.ArmUpdateProcedureModule;
+import org.team5940.robot_codebase_2017.modules.opcon_procedures.DriveUpdateProcedureModule;
+import org.team5940.robot_codebase_2017.modules.opcon_procedures.RollerUpdateProcedureModule;
+import org.team5940.robot_codebase_2017.modules.opcon_procedures.ShifterUpdateProcedureModule;
 import org.team5940.robot_core.modules.ModuleHashtable;
 import org.team5940.robot_core.modules.RobotModule;
 import org.team5940.robot_core.modules.actuators.motor_sets.CANTalonMotorSetModule;
@@ -249,6 +251,16 @@ public class Robot extends RobotModule {
 			opConProcedures.put(new DriveUpdateProcedureModule(logger, drivetrain, forwardAxis, yawAxis, robotDirectionSelector));
 		if(RobotConfig.enableShifter)
 			opConProcedures.put(new ShifterUpdateProcedureModule(logger, shifter, shiftUpButton, shiftDownButton));
+		if(RobotConfig.enableIntake)
+			opConProcedures.put(new RollerUpdateProcedureModule("intake", logger, intakeMotorSetModule, intakeAxis));
+		if(RobotConfig.enableScaler)
+			opConProcedures.put(new RollerUpdateProcedureModule("scaler", logger, scalerMotorSet, scalerAxis));
+		if(RobotConfig.enableArm) {
+			if(RobotConfig.enableCup)
+				opConProcedures.put(new ArmUpdateProcedureModule(logger, arm, armUpButton, armDownButton, cupExtendedButton, cupContractedButton));
+			else
+				opConProcedures.put(new ArmUpdateProcedureModule(logger, arm, armUpButton, armDownButton, BinaryInputModule.INERT_BINARY_INPUT, BinaryInputModule.INERT_BINARY_INPUT));
+		}
 		ProcedureModule opConAggregateProcedure = new AggregateProcedureModule("opcon_aggregate_procedure", logger, opConProcedures, true);
 		//TESTING
 		System.out.println("TESTING");

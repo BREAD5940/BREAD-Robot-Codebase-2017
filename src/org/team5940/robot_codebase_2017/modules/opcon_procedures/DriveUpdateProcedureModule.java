@@ -1,4 +1,4 @@
-package org.team5940.robot_codebase_2017.modules;
+package org.team5940.robot_codebase_2017.modules.opcon_procedures;
 
 import org.team5940.robot_core.modules.Module;
 import org.team5940.robot_core.modules.ModuleHashtable;

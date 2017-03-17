@@ -9,7 +9,6 @@ import org.team5940.robot_core.modules.ownable.AbstractOwnableModule;
 import org.team5940.robot_core.modules.ownable.ThreadUnauthorizedException;
 import org.team5940.robot_core.modules.sensors.binary_input.BinaryInputModule;
 import org.team5940.robot_core.modules.sensors.selectors.SelectorModule;
-import org.team5940.robot_core.modules.testing.TestableModule.TestStatus;
 import org.team5940.robot_core.modules.testing.communication.TestCommunicationModule;
 
 /**
