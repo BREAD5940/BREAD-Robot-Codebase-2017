@@ -21,6 +21,7 @@ import org.team5940.robot_core.modules.actuators.shifters.ShifterModule;
 import org.team5940.robot_core.modules.aggregates.drivetrains.SimpleTankDrivetrainModule;
 import org.team5940.robot_core.modules.aggregates.drivetrains.TankDrivetrainModule;
 import org.team5940.robot_core.modules.camera_streaming.SelectableMJPEGStreamerModule;
+import org.team5940.robot_core.modules.control.procedures.AbstractProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.AggregateProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.ProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.SingleShotSelectableProcedureModule;
@@ -152,10 +153,11 @@ public class Robot extends RobotModule {
 		
 		//ARM
 		System.out.println("ARM");
-		ArmModule arm = null;
+		ArmModule arm;
 		logger.log(this, "Initializing Arm");
 		if(RobotConfig.enableArm) {
 			arm = new ArmModule(logger, armMotorSet, cupPiston, downLimitSwitch, upLimitSwitch);
+			testable.put(arm);
 		}
 		
 		//HUMAN INTERFACES
@@ -193,7 +195,7 @@ public class Robot extends RobotModule {
 		System.out.println("INTAKE");
 		AxisModule intakeAxis;
 		if(RobotConfig.enableIntake) {
-			intakeAxis = new HIDAxisModule("intake_axis", logger, mechanismController, 2, false);
+			intakeAxis = new ConfigurableHIDAxisModule("intake_axis", logger, mechanismController, 1, true, 0.1, 1);
 			testable.put(intakeAxis);
 		}
 		//SCALER
@@ -235,8 +237,10 @@ public class Robot extends RobotModule {
 		if(RobotConfig.enableOpCams) {
 			VideoSource frontCamera = new UsbCamera("front", 0);
 			frontCamera.setResolution(320, 240);
+			frontCamera.setFPS(15);
 			VideoSource backCamera = new UsbCamera("back", 1);
-			frontCamera.setResolution(320, 240);
+			backCamera.setResolution(320, 240);
+			backCamera.setFPS(15);
 			SelectableMJPEGStreamerModule cameraStream = new SelectableMJPEGStreamerModule("camera_stream", logger, robotDirectionSelector, frontCamera, new VideoSource[]{frontCamera, backCamera});
 			ThreadModule cameraThread = new ThreadModule("camera_stream_thread", logger, cameraStream);
 			cameraThread.start();
@@ -252,9 +256,9 @@ public class Robot extends RobotModule {
 		if(RobotConfig.enableShifter)
 			opConProcedures.put(new ShifterUpdateProcedureModule(logger, shifter, shiftUpButton, shiftDownButton));
 		if(RobotConfig.enableIntake)
-			opConProcedures.put(new RollerUpdateProcedureModule("intake", logger, intakeMotorSetModule, intakeAxis));
+			opConProcedures.put(new RollerUpdateProcedureModule("intake", logger, intakeMotorSetModule, intakeAxis, false));
 		if(RobotConfig.enableScaler)
-			opConProcedures.put(new RollerUpdateProcedureModule("scaler", logger, scalerMotorSet, scalerAxis));
+			opConProcedures.put(new RollerUpdateProcedureModule("scaler", logger, scalerMotorSet, scalerAxis, true));
 		if(RobotConfig.enableArm) {
 			if(RobotConfig.enableCup)
 				opConProcedures.put(new ArmUpdateProcedureModule(logger, arm, armUpButton, armDownButton, cupExtendedButton, cupContractedButton));
@@ -289,7 +293,26 @@ public class Robot extends RobotModule {
 		//ROBOT PROCEDURE
 		System.out.println("ROBOT PROCEDURE");
 		this.createRobotProcedure(logger, ProcedureModule.INERT_PROCEDURE, autoProcedure, opConProcedure, ProcedureModule.INERT_PROCEDURE);
-		
+//		this.setRobotProcedure(new AbstractProcedureModule("arm_tester", new ModuleHashtable<>(), logger) {
+//			
+//			@Override
+//			protected boolean doProcedureUpdate() throws Exception {
+//				this.logger.log(this, "Arm State", arm.getCurrentState());
+//				return false;
+//			}
+//			
+//			@Override
+//			protected void doProcedureStart() throws Exception {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			@Override
+//			protected void doProcedureClean() throws Exception {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
 	}
 
 }

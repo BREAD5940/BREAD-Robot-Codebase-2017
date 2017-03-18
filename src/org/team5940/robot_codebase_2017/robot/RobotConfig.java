@@ -6,7 +6,7 @@ public class RobotConfig {
 	/**
 	 * Stores whether this is Ciabatta or not, automatically disables features when testing on Focaccia.
 	 */
-	public static final boolean isCiabatta = false;//DEFAULT: true
+	public static final boolean isCiabatta = true;//DEFAULT: true
 	
 	//LOGGING
 	/**

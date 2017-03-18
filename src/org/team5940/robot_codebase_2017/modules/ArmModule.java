@@ -131,12 +131,12 @@ public final class ArmModule extends AbstractOwnableModule implements SelectorMo
 						this.logger.vLog(this.arm, "Setting Arm State", new Object[]{state, downIn, upIn});
 						this.arm.state = state;
 					}
+					this.logger.log(this.arm, "State", state);
 					
-					if(this.arm.state == -1) {
+					if(this.arm.state == -1 || (state == 0 && arm.setState == true) || (state == 1 && arm.setState == false)) {
 						//Computing arm speed
-						double setSpeed = 0;
-						double dirCoef = this.arm.setState ? 1 : -1;
-						setSpeed = 0.3 * dirCoef;//Improve math
+						double setSpeed = this.arm.setState ? 0.3 : -0.1;
+						this.logger.log(this.arm, "Speed", setSpeed);
 						
 						//Setting arm speed
 						this.logger.vLog(this.arm, "Setting Arm Motor Speed", setSpeed);
@@ -146,6 +146,16 @@ public final class ArmModule extends AbstractOwnableModule implements SelectorMo
 							synchronized(this.arm.armMotorSet) {//Force arm acquisition
 								this.arm.armMotorSet.acquireOwnershipForCurrent(true);
 								this.arm.armMotorSet.setMotorSpeed(setSpeed);
+							}
+						}
+					}else {
+						try {
+							this.logger.log(this.arm, "SETTING TO 0");
+							this.arm.armMotorSet.setMotorSpeed(0);
+						} catch (ThreadUnauthorizedException e) {
+							synchronized(this.arm.armMotorSet) {//Force arm acquisition
+								this.arm.armMotorSet.acquireOwnershipForCurrent(true);
+								this.arm.armMotorSet.setMotorSpeed(0);
 							}
 						}
 					}
