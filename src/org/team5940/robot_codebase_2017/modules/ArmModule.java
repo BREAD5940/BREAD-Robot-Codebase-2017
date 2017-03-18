@@ -119,8 +119,11 @@ public final class ArmModule extends AbstractOwnableModule implements SelectorMo
 		public void run() {
 			this.arm.armMotorSet.acquireOwnershipForCurrent(true);
 			
+			//Set state vars for being careful if the arm hasn't finished moving.
 			boolean lastSetState = false;
 			long timeSetStateChange = 0;
+			
+			//Movement start variables for motor timeout.
 			boolean startMovingSetState = false;
 			long timeStartMoving = 0;
 			try{
@@ -144,22 +147,22 @@ public final class ArmModule extends AbstractOwnableModule implements SelectorMo
 					
 					//SPEED CALCULATIONS
 					//Check to be careful
-					if(lastSetState != this.arm.setState)
+					if(lastSetState != this.arm.setState)//Set state changed
 						timeSetStateChange = time;
-					boolean careful = (time > timeSetStateChange + 3000);
+					boolean careful = (time < timeSetStateChange + 3000);//It has been less than 3sec since the set state changed
 					//Speed calculations
 					double speedToSet = 0;
-					if(!(startMovingSetState == this.arm.setState && time > timeStartMoving + 3000)) {//Timeout in one direction check
+					if(!(startMovingSetState == this.arm.setState && time > timeStartMoving + 3000)) {//Timeout in one set direction check
 						if(arm.setState == true && (arm.state == 0 || arm.state == -1)) {//Moving up
-							if(!careful && time < timeSetStateChange + 3000)
+							if(!careful && time < timeSetStateChange + 3000)//Speedy gonzales
 								speedToSet = -0.3;
-							else
+							else//Normal
 								speedToSet = -0.1;
 						}
 						if(arm.setState == false && (arm.state == 1 || arm.state == -1)) {//Moving down
-							if(!careful && time < timeSetStateChange + 3000)
+							if(!careful && time < timeSetStateChange + 3000)//Speedy gonzales
 								speedToSet = 0.5;
-							else
+							else//Normal
 								speedToSet = 0.3;
 						}
 					}
