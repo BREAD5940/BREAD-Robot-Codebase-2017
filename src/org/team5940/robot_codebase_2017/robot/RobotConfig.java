@@ -96,6 +96,6 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should control the arm's motor, overridden by {@link RobotConfig#enableArm}.
 	 */
-	public static final boolean enableArmMotor = false;
+	public static final boolean enableArmMotor = enableArm && false;
 	
 }

@@ -21,7 +21,6 @@ import org.team5940.robot_core.modules.actuators.shifters.ShifterModule;
 import org.team5940.robot_core.modules.aggregates.drivetrains.SimpleTankDrivetrainModule;
 import org.team5940.robot_core.modules.aggregates.drivetrains.TankDrivetrainModule;
 import org.team5940.robot_core.modules.camera_streaming.SelectableMJPEGStreamerModule;
-import org.team5940.robot_core.modules.control.procedures.AbstractProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.AggregateProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.ProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.SingleShotSelectableProcedureModule;
