@@ -92,4 +92,10 @@ public class RobotConfig {
 	 */
 	public static final boolean enableCup = isCiabatta && enablePneumatics && enableArm && true;//DEFAULT: true
 	
+	//OTHER
+	/**
+	 * Configures whether the robot should control the arm's motor, overridden by {@link RobotConfig#enableArm}.
+	 */
+	public static final boolean enableArmMotor = false;
+	
 }

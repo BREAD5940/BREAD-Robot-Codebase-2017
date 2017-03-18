@@ -119,47 +119,67 @@ public final class ArmModule extends AbstractOwnableModule implements SelectorMo
 		public void run() {
 			this.arm.armMotorSet.acquireOwnershipForCurrent(true);
 			
+			boolean lastSetState = false;
+			long timeSetStateChange = 0;
+			boolean startMovingSetState = false;
+			long timeStartMoving = 0;
 			try{
 				while(!this.isInterrupted()) {
-					//Arm state detection
+					long time = System.currentTimeMillis();
+					
+					//ARM STATE
 					boolean downIn = this.arm.downSwitch.getBinaryInput();
 					boolean upIn = this.arm.upSwitch.getBinaryInput();
 					int state = -1;
 					if(downIn) state = 0;
 					else if(upIn) state = 1;
-					if(state != this.arm.state) {
+					if(state != this.arm.state) {//State change
+						if(state == -1) {//In movement
+							startMovingSetState = this.arm.setState;
+							timeStartMoving = time;
+						}
 						this.logger.vLog(this.arm, "Setting Arm State", new Object[]{state, downIn, upIn});
 						this.arm.state = state;
 					}
-					this.logger.log(this.arm, "State", state);
 					
-					if(this.arm.state == -1 || (state == 0 && arm.setState == true) || (state == 1 && arm.setState == false)) {
-						//Computing arm speed
-						double setSpeed = this.arm.setState ? 0.3 : -0.1;
-						this.logger.log(this.arm, "Speed", setSpeed);
-						
-						//Setting arm speed
-						this.logger.vLog(this.arm, "Setting Arm Motor Speed", setSpeed);
-						try {
-							this.arm.armMotorSet.setMotorSpeed(setSpeed);
-						} catch (ThreadUnauthorizedException e) {
-							synchronized(this.arm.armMotorSet) {//Force arm acquisition
-								this.arm.armMotorSet.acquireOwnershipForCurrent(true);
-								this.arm.armMotorSet.setMotorSpeed(setSpeed);
-							}
+					//SPEED CALCULATIONS
+					//Check to be careful
+					if(lastSetState != this.arm.setState)
+						timeSetStateChange = time;
+					boolean careful = (time > timeSetStateChange + 3000);
+					//Speed calculations
+					double speedToSet = 0;
+					if(!(startMovingSetState == this.arm.setState && time > timeStartMoving + 3000)) {//Timeout in one direction check
+						if(arm.setState == true && (arm.state == 0 || arm.state == -1)) {//Moving up
+							if(!careful && time < timeSetStateChange + 3000)
+								speedToSet = -0.3;
+							else
+								speedToSet = -0.1;
 						}
-					}else {
-						try {
-							this.logger.log(this.arm, "SETTING TO 0");
-							this.arm.armMotorSet.setMotorSpeed(0);
-						} catch (ThreadUnauthorizedException e) {
-							synchronized(this.arm.armMotorSet) {//Force arm acquisition
-								this.arm.armMotorSet.acquireOwnershipForCurrent(true);
-								this.arm.armMotorSet.setMotorSpeed(0);
-							}
+						if(arm.setState == false && (arm.state == 1 || arm.state == -1)) {//Moving down
+							if(!careful && time < timeSetStateChange + 3000)
+								speedToSet = 0.5;
+							else
+								speedToSet = 0.3;
 						}
 					}
+					
+					
+					//SET ARM SPEED
+					this.logger.vLog(this.arm, "Setting Arm Motor Speed", speedToSet);
+					try {
+						this.arm.armMotorSet.setMotorSpeed(speedToSet);
+					} catch (ThreadUnauthorizedException e) {
+						synchronized(this.arm.armMotorSet) {//Force arm acquisition
+							this.arm.armMotorSet.acquireOwnershipForCurrent(true);
+							this.arm.armMotorSet.setMotorSpeed(speedToSet);
+						}
+					}
+					
+					
+					lastSetState = this.arm.setState;
 					Thread.sleep(10);
+
 				}
 			}catch (Exception e) {
 				this.logger.error(this.arm, "Arm Update Thread Failed", e);
