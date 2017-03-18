@@ -9,6 +9,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/BREAD-Robot-Core"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/BREAD-Robot-Core.jar"/>
-	<classpathentry kind="var" path="USERLIBS_DIR/navx_frc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
