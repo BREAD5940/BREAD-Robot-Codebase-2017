@@ -22,7 +22,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should log to files.
 	 */
-	public static final boolean enableFileLog = false;//DEFAULT: true
+	public static final boolean enableFileLog = true;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should have a verbose file logging.

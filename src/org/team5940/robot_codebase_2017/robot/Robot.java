@@ -4,7 +4,9 @@ import java.io.File;
 
 import org.team5940.robot_codebase_2017.modules.ArmModule;
 import org.team5940.robot_codebase_2017.modules.ScalerMotorSetModule;
+import org.team5940.robot_codebase_2017.modules.auto_procedures.BadCenterGearAutoProcedureModule;
 import org.team5940.robot_codebase_2017.modules.auto_procedures.ForwardAutoProcedureModule;
+import org.team5940.robot_codebase_2017.modules.auto_procedures.TurningAutoProcedureModule;
 import org.team5940.robot_codebase_2017.modules.opcon_procedures.ArmUpdateProcedureModule;
 import org.team5940.robot_codebase_2017.modules.opcon_procedures.DriveUpdateProcedureModule;
 import org.team5940.robot_codebase_2017.modules.opcon_procedures.RollerUpdateProcedureModule;
@@ -21,7 +23,6 @@ import org.team5940.robot_core.modules.actuators.shifters.ShifterModule;
 import org.team5940.robot_core.modules.aggregates.drivetrains.SimpleTankDrivetrainModule;
 import org.team5940.robot_core.modules.aggregates.drivetrains.TankDrivetrainModule;
 import org.team5940.robot_core.modules.camera_streaming.SelectableMJPEGStreamerModule;
-import org.team5940.robot_core.modules.control.procedures.AbstractProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.AggregateProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.ProcedureModule;
 import org.team5940.robot_core.modules.control.procedures.SingleShotSelectableProcedureModule;
@@ -62,7 +63,7 @@ public class Robot extends RobotModule {
 		//FILE LOGGING
 		LoggerModule fileLogger = LoggerModule.INERT_LOGGER;
 		if(RobotConfig.enableFileLog)
-			fileLogger = new FileLoggerModule("file_logger", LoggerModule.INERT_LOGGER, RobotConfig.enableVerboseFileLog, true, new File("/home/lvuser/logs.txt"));
+			fileLogger = new FileLoggerModule("file_logger", LoggerModule.INERT_LOGGER, RobotConfig.enableVerboseFileLog, true, new File("/media/sda1/log.txt"));
 		//RIOLOGGING
 		LoggerModule rioLogger = LoggerModule.INERT_LOGGER;
 		if(RobotConfig.enableRiolog)
@@ -228,17 +229,17 @@ public class Robot extends RobotModule {
 		System.out.println("AUTO SELECTOR");
 		SelectorModule autoSelector;
 		if(RobotConfig.enableAuto) {
-			autoSelector = new SmartDashboardSelectorModule("auto_selector", logger, new String[]{"None", "Forward"}, 1);
+			autoSelector = new SmartDashboardSelectorModule("auto_selector", logger, new String[]{"None", "Forward", "Bad Center", "Turn Right", "Turn Left"}, 1);
 			testable.put(autoSelector);
 		}
 		
 		//OPERATOR CAMERAS
 		System.out.println("OPERATOR CAMERAS");
 		if(RobotConfig.enableOpCams) {
-			VideoSource frontCamera = new UsbCamera("front", 0);
+			VideoSource frontCamera = new UsbCamera("front", 1);
 			frontCamera.setResolution(320, 240);
 			frontCamera.setFPS(15);
-			VideoSource backCamera = new UsbCamera("back", 1);
+			VideoSource backCamera = new UsbCamera("back", 0);
 			backCamera.setResolution(320, 240);
 			backCamera.setFPS(15);
 			SelectableMJPEGStreamerModule cameraStream = new SelectableMJPEGStreamerModule("camera_stream", logger, robotDirectionSelector, frontCamera, new VideoSource[]{frontCamera, backCamera});
@@ -288,7 +289,10 @@ public class Robot extends RobotModule {
 		ProcedureModule autoProcedure = ProcedureModule.INERT_PROCEDURE;
 		if(RobotConfig.enableAuto) {
 			ProcedureModule forwardAutoProcedure = new ForwardAutoProcedureModule(logger, drivetrain);
-			autoProcedure = new SingleShotSelectableProcedureModule("auto_procedure", logger, autoSelector, ProcedureModule.INERT_PROCEDURE, new ProcedureModule[]{ProcedureModule.INERT_PROCEDURE, forwardAutoProcedure}, true);
+			ProcedureModule badCenter = new BadCenterGearAutoProcedureModule(logger, drivetrain, arm);
+			ProcedureModule rightAutoProcedure = new TurningAutoProcedureModule(logger, drivetrain, arm, true);
+			ProcedureModule leftAutoProcedure = new TurningAutoProcedureModule(logger, drivetrain, arm, false);
+			autoProcedure = new SingleShotSelectableProcedureModule("auto_procedure", logger, autoSelector, ProcedureModule.INERT_PROCEDURE, new ProcedureModule[]{ProcedureModule.INERT_PROCEDURE, forwardAutoProcedure, badCenter, rightAutoProcedure, leftAutoProcedure}, true);
 		}
 		//ROBOT PROCEDURE
 		System.out.println("ROBOT PROCEDURE");

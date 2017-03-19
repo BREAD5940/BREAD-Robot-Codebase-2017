@@ -38,7 +38,7 @@ public final class DriveUpdateProcedureModule extends AbstractProcedureModule {
 		double yaw = this.yawAxis.getAxis();
 		if(direction.getCurrentState() == 1) {
 			forward = -forward;
-			//yaw = -yaw;
+//			yaw = -yaw;
 		}
 		this.logger.vLog(this, "Updating Drivetrain", new Object[]{forward, yaw});
 		this.drivetrain.updateArcade(forward, yaw);
