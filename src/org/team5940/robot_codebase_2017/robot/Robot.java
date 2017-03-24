@@ -55,6 +55,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 
+/**
+ * The implementation of {@link RobotModule} for this year's competition.
+ * @author David Boles
+ *
+ */
 public class Robot extends RobotModule {
 	
 	@Override
@@ -63,7 +68,7 @@ public class Robot extends RobotModule {
 		//FILE LOGGING
 		LoggerModule fileLogger = LoggerModule.INERT_LOGGER;
 		if(RobotConfig.enableFileLog)
-			fileLogger = new FileLoggerModule("file_logger", LoggerModule.INERT_LOGGER, RobotConfig.enableVerboseFileLog, true, new File("/media/sda1/log.txt"));
+			fileLogger = new FileLoggerModule("file_logger", LoggerModule.INERT_LOGGER, RobotConfig.enableVerboseFileLog, true, new File("/media/sda1" + "/logs_" + System.currentTimeMillis() + "/log.txt"));
 		//RIOLOGGING
 		LoggerModule rioLogger = LoggerModule.INERT_LOGGER;
 		if(RobotConfig.enableRiolog)
@@ -76,7 +81,7 @@ public class Robot extends RobotModule {
 		ModuleHashtable<TestableModule> testable = new ModuleHashtable<>();
 		
 		//SHIFTER
-		System.out.println("SHIFTER");
+		logger.log(this, "SHIFTER");
 		ShifterModule shifter;
 		if(RobotConfig.enableShifter) {
 			shifter = RobotConfig.isCiabatta ? new DoubleSolenoidShifterModule("shifter", logger, new DoubleSolenoid(9, 6, 7)) : new DoubleSolenoidShifterModule("shifter", logger, new DoubleSolenoid(6, 0, 1));
@@ -84,11 +89,11 @@ public class Robot extends RobotModule {
 		}
 		
 		//DRIVETRAIN
-		System.out.println("DRIVETRAIN");
+		logger.log(this, "DRIVETRAIN");
 		TankDrivetrainModule drivetrain;
 		if(RobotConfig.enableDrivetrain) {
 			//LEFT MOTORS
-			System.out.println("LEFT MOTORS");
+			logger.log(this, "DRIVETRAIN - LEFT MOTORS");
 			CANTalon frontLeftTalon = new CANTalon(3);
 			frontLeftTalon.setInverted(true);
 			CANTalon backLeftTalon = new CANTalon(4);
@@ -96,20 +101,20 @@ public class Robot extends RobotModule {
 			MotorSetModule leftMotorSet = new CANTalonMotorSetModule("left_motor_set", logger, new CANTalon[]{frontLeftTalon, backLeftTalon});
 			
 			//RIGHT MOTORS
-			System.out.println("RIGHT MOTORS");
+			logger.log(this, "DRIVETRAIN - RIGHT MOTORS");
 			CANTalon frontRightTalon = new CANTalon(1);
 			CANTalon backRightTalon = new CANTalon(2);
 			MotorSetModule rightMotorSet = new CANTalonMotorSetModule("right_motor_set", logger, new CANTalon[]{frontRightTalon, backRightTalon});
 			
 			//DRIVETRAIN
-			System.out.println("DRIVETRAIN");
+			logger.log(this, "DRIVETRAIN - DRIVETRAIN");
 			if(RobotConfig.enableShifter) drivetrain = new SimpleTankDrivetrainModule("drivetrain", logger, leftMotorSet, rightMotorSet, shifter);
 			else drivetrain = new SimpleTankDrivetrainModule("drivetrain", logger, leftMotorSet, rightMotorSet);
 			testable.put(drivetrain);
 		}
 
 		//SCALER
-		System.out.println("SCALER");
+		logger.log(this, "SCALER");
 		MotorSetModule scalerMotorSet;
 		if(RobotConfig.enableScaler) {
 			CANTalon leftScalerTalon = new CANTalon(7);
@@ -120,7 +125,7 @@ public class Robot extends RobotModule {
 		}
 		
 		//INTAKE
-		System.out.println("INTAKE");
+		logger.log(this, "INTAKE");
 		MotorSetModule intakeMotorSetModule;
 		if(RobotConfig.enableIntake) {
 			CANTalon intakeTalon = new CANTalon(6);
@@ -130,21 +135,21 @@ public class Robot extends RobotModule {
 		}
 		
 		//CUP
-		System.out.println("CUP");
-		PistonModule cupPiston;
+		logger.log(this, "CUP");
+		PistonModule cupPiston = PistonModule.INERT_PISTON;
 		if(RobotConfig.enableCup) {
 			cupPiston = new DoubleSolenoidPistonModule("cup", logger, new DoubleSolenoid(9, 4, 5));
 			testable.put(cupPiston);
 		}
 		
 		//ARM LIMIT SWITCHES
-		System.out.println("ARM LIMIT SWITCHES");
+		logger.log(this, "ARM LIMIT SWITCHES");
 		BinaryInputModule upLimitSwitch = new DigitalBinaryInputModule("up_limit_switch", logger, new DigitalInput(0), true);
 		BinaryInputModule downLimitSwitch = new DigitalBinaryInputModule("down_limit_switch", logger, new DigitalInput(1), true);
 		testable.chainPut(upLimitSwitch).put(downLimitSwitch);
 		
 		//ARM MOTORS
-		System.out.println("ARM MOTORS");
+		logger.log(this, "ARM MOTORS");
 		MotorSetModule armMotorSet;
 		if(RobotConfig.enableArm) {
 			CANTalon armTalon = new CANTalon(5);
@@ -153,29 +158,28 @@ public class Robot extends RobotModule {
 		}
 		
 		//ARM
-		System.out.println("ARM");
-		ArmModule arm;
-		logger.log(this, "Initializing Arm");
+		logger.log(this, "ARM");
+		ArmModule arm = null;
 		if(RobotConfig.enableArm) {
 			arm = new ArmModule(logger, armMotorSet, cupPiston, downLimitSwitch, upLimitSwitch);
 			testable.put(arm);
 		}
 		
 		//HUMAN INTERFACES
-		System.out.println("HUMAN INTERFACES");
+		logger.log(this, "HUMAN INTERFACES");
 		//HIDs
-		System.out.println("HIDs");
+		logger.log(this, "HUMAN INTERFACES - HIDs");
 		GenericHID driverController = new Joystick(0);
 		GenericHID mechanismController;
 		if(RobotConfig.isCiabatta) mechanismController = new Joystick(1);
 		//ROBOT DIRECTION
-		System.out.println("ROBOT DIRECTION");
+		logger.log(this, "HUMAN INTERFACES - ROBOT DIRECTION");
 		BinaryInputModule directionSwapButton = new HIDButtonBinaryInputModule("dir_swap_button", logger, driverController, 1, false);
 		BinaryInputModule robotDirection = new TogglingBinaryInputModule("robot_direction", logger, directionSwapButton, false, true, 100);
 		SelectorModule robotDirectionSelector = new BinarySelectorModule("robot_direction_selector", logger, robotDirection);
 		testable.chainPut(directionSwapButton).chainPut(robotDirection).chainPut(robotDirectionSelector);
 		//DRIVING
-		System.out.println("DRIVING");
+		logger.log(this, "HUMAN INTERFACES - DRIVING");
 		AxisModule forwardAxis;
 		AxisModule yawAxis;
 		if(RobotConfig.enableDrivetrain) {
@@ -184,7 +188,7 @@ public class Robot extends RobotModule {
 			testable.chainPut(forwardAxis).chainPut(yawAxis);
 		}
 		//SHIFTING
-		System.out.println("SHIFTING");
+		logger.log(this, "HUMAN INTERFACES - SHIFTING");
 		BinaryInputModule shiftUpButton;
 		BinaryInputModule shiftDownButton;
 		if(RobotConfig.enableShifter) {
@@ -193,21 +197,21 @@ public class Robot extends RobotModule {
 			testable.chainPut(shiftUpButton).chainPut(shiftDownButton);
 		}
 		//INTAKE
-		System.out.println("INTAKE");
+		logger.log(this, "HUMAN INTERFACES - INTAKE");
 		AxisModule intakeAxis;
 		if(RobotConfig.enableIntake) {
 			intakeAxis = new ConfigurableHIDAxisModule("intake_axis", logger, mechanismController, 1, true, 0.1, 1);
 			testable.put(intakeAxis);
 		}
 		//SCALER
-		System.out.println("SCALER");
+		logger.log(this, "HUMAN INTERFACES - SCALER");
 		AxisModule scalerAxis;
 		if(RobotConfig.enableScaler) {
 			scalerAxis = new HIDAxisModule("scaler_axis", logger, mechanismController, 3, false);
 			testable.put(scalerAxis);
 		}
 		//ARM
-		System.out.println("ARM");
+		logger.log(this, "HUMAN INTERFACES - ARM");
 		BinaryInputModule armUpButton;
 		BinaryInputModule armDownButton;
 		if(RobotConfig.enableArm) {
@@ -216,7 +220,7 @@ public class Robot extends RobotModule {
 			testable.chainPut(armUpButton).chainPut(armDownButton);
 		}
 		//CUP
-		System.out.println("CUP");
+		logger.log(this, "HUMAN INTERFACES - CUP");
 		BinaryInputModule cupExtendedButton;
 		BinaryInputModule cupContractedButton;
 		if(RobotConfig.enableCup) {
@@ -226,7 +230,7 @@ public class Robot extends RobotModule {
 		}
 		
 		//AUTO SELECTOR
-		System.out.println("AUTO SELECTOR");
+		logger.log(this, "AUTO SELECTOR");
 		SelectorModule autoSelector;
 		if(RobotConfig.enableAuto) {
 			autoSelector = new SmartDashboardSelectorModule("auto_selector", logger, new String[]{"None", "Forward", "Bad Center", "Turn Right", "Turn Left"}, 1);
@@ -234,7 +238,7 @@ public class Robot extends RobotModule {
 		}
 		
 		//OPERATOR CAMERAS
-		System.out.println("OPERATOR CAMERAS");
+		logger.log(this, "OPERATOR CAMERAS");
 		if(RobotConfig.enableOpCams) {
 			VideoSource frontCamera = new UsbCamera("front", 1);
 			frontCamera.setResolution(320, 240);
@@ -248,27 +252,33 @@ public class Robot extends RobotModule {
 		}
 		
 		//CONTROL
-		System.out.println("CONTROL");
+		logger.log(this, "CONTROL");
 		//STANDARD OPCON
-		System.out.println("STANDARD OPCON");
+		logger.log(this, "CONTROL - STANDARD OPCON");
 		ModuleHashtable<ProcedureModule> opConProcedures = new ModuleHashtable<>();
 		if(RobotConfig.enableDrivetrain)
 			opConProcedures.put(new DriveUpdateProcedureModule(logger, drivetrain, forwardAxis, yawAxis, robotDirectionSelector));
+		System.out.println("D good");
 		if(RobotConfig.enableShifter)
 			opConProcedures.put(new ShifterUpdateProcedureModule(logger, shifter, shiftUpButton, shiftDownButton));
+		System.out.println("Sh good");
 		if(RobotConfig.enableIntake)
 			opConProcedures.put(new RollerUpdateProcedureModule("intake", logger, intakeMotorSetModule, intakeAxis, false));
+		System.out.println("I good");
 		if(RobotConfig.enableScaler)
 			opConProcedures.put(new RollerUpdateProcedureModule("scaler", logger, scalerMotorSet, scalerAxis, true));
+		System.out.println("Sc good");
 		if(RobotConfig.enableArm) {
 			if(RobotConfig.enableCup)
 				opConProcedures.put(new ArmUpdateProcedureModule(logger, arm, armUpButton, armDownButton, cupExtendedButton, cupContractedButton));
 			else
 				opConProcedures.put(new ArmUpdateProcedureModule(logger, arm, armUpButton, armDownButton, BinaryInputModule.INERT_BINARY_INPUT, BinaryInputModule.INERT_BINARY_INPUT));
 		}
+		System.out.println("A good");
 		ProcedureModule opConAggregateProcedure = new AggregateProcedureModule("opcon_aggregate_procedure", logger, opConProcedures, true);
+		System.out.println("Agg good");
 		//TESTING
-		System.out.println("TESTING");
+		logger.log(this, "CONTROL - TESTING");
 		TestCommunicationModule comms;
 		ProcedureModule testingProcedure;
 		SelectorModule testingSelector;
@@ -278,45 +288,27 @@ public class Robot extends RobotModule {
 			testingSelector = new BinarySelectorModule("testing_selector", logger, directionSwapButton);
 			testable.put(testingSelector);
 		}
-		System.out.println("COMBINED OPCON");
 		//COMBINED OPCON
+		logger.log(this, "CONTROL - COMBINED OPCON");
 		ProcedureModule opConProcedure;
 		if(RobotConfig.enableTesting)
 			opConProcedure = new SingleShotSelectableProcedureModule("opcon_procedure", logger, testingSelector, opConAggregateProcedure, new ProcedureModule[]{opConAggregateProcedure, testingProcedure}, true);
 		else
 			opConProcedure = opConAggregateProcedure;
 		//AUTO
+		logger.log(this, "CONTROL - AUTO");
 		ProcedureModule autoProcedure = ProcedureModule.INERT_PROCEDURE;
 		if(RobotConfig.enableAuto) {
-			ProcedureModule forwardAutoProcedure = new ForwardAutoProcedureModule(logger, drivetrain);
-			ProcedureModule badCenter = new BadCenterGearAutoProcedureModule(logger, drivetrain, arm);
-			ProcedureModule rightAutoProcedure = new TurningAutoProcedureModule(logger, drivetrain, arm, true);
-			ProcedureModule leftAutoProcedure = new TurningAutoProcedureModule(logger, drivetrain, arm, false);
+			ProcedureModule forwardAutoProcedure = RobotConfig.enableDrivetrain ? new ForwardAutoProcedureModule(logger, drivetrain) : ProcedureModule.INERT_PROCEDURE;
+			ProcedureModule badCenter = (RobotConfig.enableDrivetrain && RobotConfig.enableArm) ? new BadCenterGearAutoProcedureModule(logger, drivetrain, arm) : ProcedureModule.INERT_PROCEDURE;
+			ProcedureModule rightAutoProcedure = (RobotConfig.enableDrivetrain && RobotConfig.enableArm) ? new TurningAutoProcedureModule(logger, drivetrain, arm, true) : ProcedureModule.INERT_PROCEDURE;
+			ProcedureModule leftAutoProcedure = (RobotConfig.enableDrivetrain && RobotConfig.enableArm) ? new TurningAutoProcedureModule(logger, drivetrain, arm, false) : ProcedureModule.INERT_PROCEDURE;
 			autoProcedure = new SingleShotSelectableProcedureModule("auto_procedure", logger, autoSelector, ProcedureModule.INERT_PROCEDURE, new ProcedureModule[]{ProcedureModule.INERT_PROCEDURE, forwardAutoProcedure, badCenter, rightAutoProcedure, leftAutoProcedure}, true);
 		}
 		//ROBOT PROCEDURE
-		System.out.println("ROBOT PROCEDURE");
+		logger.log(this, "CONTROL - ROBOT PROCEDURE");
 		this.createRobotProcedure(logger, ProcedureModule.INERT_PROCEDURE, autoProcedure, opConProcedure, ProcedureModule.INERT_PROCEDURE);
-//		this.setRobotProcedure(new AbstractProcedureModule("arm_tester", new ModuleHashtable<>(), logger) {
-//			
-//			@Override
-//			protected boolean doProcedureUpdate() throws Exception {
-//				this.logger.log(this, "Arm State", arm.getCurrentState());
-//				return false;
-//			}
-//			
-//			@Override
-//			protected void doProcedureStart() throws Exception {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//			@Override
-//			protected void doProcedureClean() throws Exception {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		});
+		
 	}
 
 }

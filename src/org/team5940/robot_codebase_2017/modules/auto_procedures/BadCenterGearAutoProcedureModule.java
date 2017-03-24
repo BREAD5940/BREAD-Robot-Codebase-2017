@@ -7,17 +7,55 @@ import org.team5940.robot_core.modules.aggregates.drivetrains.TankDrivetrainModu
 import org.team5940.robot_core.modules.control.procedures.AbstractProcedureModule;
 import org.team5940.robot_core.modules.logging.LoggerModule;
 
-//TODO docs
+/**
+ * A simple time based center gear placement autonomous procedure.
+ * @author David Boles
+ *
+ */
 public final class BadCenterGearAutoProcedureModule extends AbstractProcedureModule {
 
+	/**
+	 * Stores this' drivetrain.
+	 */
 	private final TankDrivetrainModule drivetrain;
+	
+	/**
+	 * Stores this' arm.
+	 */
 	private final ArmModule arm;
+	
+	/**
+	 * The time when this procedure was started.
+	 */
 	private long start = 0;
+	
+	/**
+	 * The ms from start to raise the arm.
+	 */
 	private static final long armUp = 1000;
+	
+	/**
+	 * The ms from start after armUp to drive forward.
+	 */
 	private static final long forward = armUp + 1900;
+	
+	/**
+	 * The ms from start after forward to drop the gear.
+	 */
 	private static final long drop = forward + 1000;
+	
+	/**
+	 * The ms from start after drop to drive backward.
+	 */
 	private static final long backward = drop + 2000;
 	
+	/**
+	 * Initializes a new {@link BadCenterGearAutoProcedureModule}.
+	 * @param logger This' logger.
+	 * @param drivetrain This' drivetrain.
+	 * @param arm This' arm.
+	 * @throws IllegalArgumentException Thrown if any argument is null.
+	 */
 	public BadCenterGearAutoProcedureModule(LoggerModule logger, TankDrivetrainModule drivetrain, ArmModule arm)
 			throws IllegalArgumentException {
 		super("forward_auto_procedure", new ModuleHashtable<Module>(drivetrain).chainPut(arm), logger);
@@ -26,7 +64,7 @@ public final class BadCenterGearAutoProcedureModule extends AbstractProcedureMod
 		this.arm = arm;
 		this.logger.logInitialization(this, BadCenterGearAutoProcedureModule.class, new Object[]{drivetrain, arm});
 	}
-
+	
 	@Override
 	protected void doProcedureStart() throws Exception {
 		start = System.currentTimeMillis();

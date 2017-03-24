@@ -1,5 +1,10 @@
 package org.team5940.robot_codebase_2017.robot;
 
+/**
+ * Stores configuration booleans for this year's codebase.
+ * @author David Boles
+ *
+ */
 public class RobotConfig {
 	
 	//ROBOT TYPE
@@ -12,12 +17,12 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should log to the Riolog.
 	 */
-	public static final boolean enableRiolog = true;//DEFAULT: true
+	public static final boolean enableRiolog = false;//DEFAULT: false
 	
 	/**
 	 * Configures whether the robot should have a verbose Riologging.
 	 */
-	public static final boolean enableVerboseRiolog = false;//DEFAULT: false
+	public static final boolean enableVerboseRiolog = true;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should log to files.
@@ -38,7 +43,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot has advanced autonomous, overriden by {@link RobotConfig#enableAuto} and {@link RobotConfig#isCiabatta}.
 	 */
-	//public static final boolean enableAdvancedAuto = enableAuto && isCiabatta && true;//DEFAULT: true
+	public static final boolean enableAdvancedAuto = enableAuto && isCiabatta && true;//DEFAULT: true
 
 	/**
 	 * Configures whether the robot has operator control.
@@ -88,8 +93,8 @@ public class RobotConfig {
 	public static final boolean enableShifter = enableDrivetrain && enablePneumatics && true;//DEFAULT: true
 	
 	/**
-	 * Configures whether the robot should control the cup, overridden by {@link RobotConfig#isCiabatta}, {@link RobotConfig#enablePneumatics}, and {@link RobotConfig#enableArm}.
+	 * Configures whether the robot should control the cup, overridden by {@link RobotConfig#enablePneumatics}, and {@link RobotConfig#enableArm}.
 	 */
-	public static final boolean enableCup = isCiabatta && enablePneumatics && enableArm && true;//DEFAULT: true
+	public static final boolean enableCup = enablePneumatics && enableArm && true;//DEFAULT: true
 	
 }
