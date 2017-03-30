@@ -43,7 +43,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot has advanced autonomous, overriden by {@link RobotConfig#enableAuto} and {@link RobotConfig#isCiabatta}.
 	 */
-	public static final boolean enableAdvancedAuto = enableAuto && isCiabatta && true;//DEFAULT: true
+	public static final boolean enableAdvancedAuto = enableAuto && isCiabatta && false;//DEFAULT: true
 
 	/**
 	 * Configures whether the robot has operator control.
