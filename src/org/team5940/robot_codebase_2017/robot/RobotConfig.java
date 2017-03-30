@@ -97,4 +97,12 @@ public class RobotConfig {
 	 */
 	public static final boolean enableCup = enablePneumatics && enableArm && true;//DEFAULT: true
 	
+	
+	//MOTORS
+	/**
+	 * Configures whether the robot should control the arm motor(s), overridden by {@link RobotConfig#enableArm}.
+	 */
+	public static final boolean enableArmMotors = enableArm && true;//DEFAULT: true
+	
+	
 }

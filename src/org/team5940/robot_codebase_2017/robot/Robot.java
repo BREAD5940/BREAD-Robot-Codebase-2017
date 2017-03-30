@@ -150,8 +150,8 @@ public class Robot extends RobotModule {
 		
 		//ARM MOTORS
 		logger.log(this, "ARM MOTORS");
-		MotorSetModule armMotorSet;
-		if(RobotConfig.enableArm) {
+		MotorSetModule armMotorSet = MotorSetModule.INERT_MOTOR_SET;
+		if(RobotConfig.enableArmMotors) {
 			CANTalon armTalon = new CANTalon(5);
 			armTalon.setInverted(true);
 			armMotorSet = new CANTalonMotorSetModule("arm_motor_set", logger, armTalon);
