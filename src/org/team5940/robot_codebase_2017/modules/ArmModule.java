@@ -135,7 +135,7 @@ public final class ArmModule extends AbstractOwnableModule implements SelectorMo
 					
 					if(this.arm.state == -1 || (state == 0 && arm.setState == true) || (state == 1 && arm.setState == false)) {
 						//Computing arm speed
-						double setSpeed = this.arm.setState ? 0.3 : -0.15;
+						double setSpeed = this.arm.setState ? 0.35 : -0.15;
 						this.logger.log(this.arm, "Speed", setSpeed);
 						
 						//Setting arm speed

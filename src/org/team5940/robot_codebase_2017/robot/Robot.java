@@ -68,7 +68,7 @@ public class Robot extends RobotModule {
 		//FILE LOGGING
 		LoggerModule fileLogger = LoggerModule.INERT_LOGGER;
 		if(RobotConfig.enableFileLog)
-			fileLogger = new FileLoggerModule("file_logger", LoggerModule.INERT_LOGGER, RobotConfig.enableVerboseFileLog, true, new File("/media/sda1" + "/logs_" + System.currentTimeMillis() + "/log.txt"));
+			fileLogger = new FileLoggerModule("file_logger", LoggerModule.INERT_LOGGER, RobotConfig.enableVerboseFileLog, true, new File("/media/sda1/new" + "/logs_" + System.currentTimeMillis() + "/log.txt"));
 		//RIOLOGGING
 		LoggerModule rioLogger = LoggerModule.INERT_LOGGER;
 		if(RobotConfig.enableRiolog)
@@ -91,19 +91,24 @@ public class Robot extends RobotModule {
 		//DRIVETRAIN
 		logger.log(this, "DRIVETRAIN");
 		TankDrivetrainModule drivetrain;
+		final double vRampRate = 9;
 		if(RobotConfig.enableDrivetrain) {
 			//LEFT MOTORS
 			logger.log(this, "DRIVETRAIN - LEFT MOTORS");
 			CANTalon frontLeftTalon = new CANTalon(3);
 			frontLeftTalon.setInverted(true);
+			frontLeftTalon.setVoltageRampRate(vRampRate);
 			CANTalon backLeftTalon = new CANTalon(4);
 			backLeftTalon.setInverted(true);
+			backLeftTalon.setVoltageRampRate(vRampRate);
 			MotorSetModule leftMotorSet = new CANTalonMotorSetModule("left_motor_set", logger, new CANTalon[]{frontLeftTalon, backLeftTalon});
 			
 			//RIGHT MOTORS
 			logger.log(this, "DRIVETRAIN - RIGHT MOTORS");
 			CANTalon frontRightTalon = new CANTalon(1);
+			frontRightTalon.setVoltageRampRate(vRampRate);
 			CANTalon backRightTalon = new CANTalon(2);
+			backRightTalon.setVoltageRampRate(vRampRate);
 			MotorSetModule rightMotorSet = new CANTalonMotorSetModule("right_motor_set", logger, new CANTalon[]{frontRightTalon, backRightTalon});
 			
 			//DRIVETRAIN
@@ -183,8 +188,8 @@ public class Robot extends RobotModule {
 		AxisModule forwardAxis;
 		AxisModule yawAxis;
 		if(RobotConfig.enableDrivetrain) {
-			forwardAxis = new ConfigurableHIDAxisModule("forward_axis", logger, driverController, 1, true, 0.05, 2);
-			yawAxis = new ConfigurableHIDAxisModule("yaw_axis", logger, driverController, 4, false, 0.05, 2);
+			forwardAxis = new ConfigurableHIDAxisModule("forward_axis", logger, driverController, 1, true, 0.075, 2);
+			yawAxis = new ConfigurableHIDAxisModule("yaw_axis", logger, driverController, 4, false, 0.075, 2);
 			testable.chainPut(forwardAxis).chainPut(yawAxis);
 		}
 		//SHIFTING
@@ -308,7 +313,6 @@ public class Robot extends RobotModule {
 		//ROBOT PROCEDURE
 		logger.log(this, "CONTROL - ROBOT PROCEDURE");
 		this.createRobotProcedure(logger, ProcedureModule.INERT_PROCEDURE, autoProcedure, opConProcedure, ProcedureModule.INERT_PROCEDURE);
-		
 	}
 
 }

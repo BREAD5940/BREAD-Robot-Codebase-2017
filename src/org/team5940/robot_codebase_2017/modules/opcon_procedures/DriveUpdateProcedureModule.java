@@ -11,11 +11,14 @@ import org.team5940.robot_core.modules.sensors.selectors.SelectorModule;
 //TODO
 public final class DriveUpdateProcedureModule extends AbstractProcedureModule {
 
+	private final double stepHigh = 0.15;
+	private final double stepLow = 0.075;
 	private final TankDrivetrainModule drivetrain;
 	private final AxisModule forwardAxis;
 	private final AxisModule yawAxis;
 	private final SelectorModule direction;
-	
+	private double forward = 0;
+	private double yaw = 0;	
 	//TODO
 	public DriveUpdateProcedureModule(LoggerModule logger, TankDrivetrainModule drivetrain, AxisModule forwardAxis, AxisModule yawAxis, SelectorModule direction)
 			throws IllegalArgumentException {
@@ -34,14 +37,26 @@ public final class DriveUpdateProcedureModule extends AbstractProcedureModule {
 
 	@Override
 	protected boolean doProcedureUpdate() throws Exception {
-		double forward = this.forwardAxis.getAxis();
-		double yaw = this.yawAxis.getAxis();
+		double forwardIn = this.forwardAxis.getAxis();
+		double yawIn = this.yawAxis.getAxis();
 		if(direction.getCurrentState() == 1) {
-			forward = -forward;
+			forwardIn = -forwardIn;
 //			yaw = -yaw;
 		}
+		if(Math.abs(forwardIn - forward) > stepHigh)
+			forward += (forwardIn > forward) ? this.stepHigh : -this.stepHigh;
+		else if(Math.abs(forwardIn - forward) > stepLow)
+			forward += (forwardIn > forward) ? this.stepHigh : -this.stepHigh;
+		forward = Math.max(Math.min(forward, 1), -1);
+		
+		if(Math.abs(yawIn - yaw) > stepHigh)
+			yaw += (yawIn > yaw) ? this.stepHigh : -this.stepHigh;
+		else if(Math.abs(yawIn - yaw) > stepLow)
+			yaw += (yawIn > yaw) ? this.stepLow : -this.stepLow;
+		yaw = Math.max(Math.min(yaw, 1), -1);
 		this.logger.vLog(this, "Updating Drivetrain", new Object[]{forward, yaw});
 		this.drivetrain.updateArcade(forward, yaw);
+		
 		return false;
 	}
 
