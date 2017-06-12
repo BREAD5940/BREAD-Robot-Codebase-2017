@@ -149,8 +149,9 @@ public class Robot extends RobotModule {
 		
 		//ARM LIMIT SWITCHES
 		logger.log(this, "ARM LIMIT SWITCHES");
-		BinaryInputModule upLimitSwitch = new DigitalBinaryInputModule("up_limit_switch", logger, new DigitalInput(0), true);
-		BinaryInputModule downLimitSwitch = new DigitalBinaryInputModule("down_limit_switch", logger, new DigitalInput(1), true);
+		LoggerModule log = new SystemLoggerModule("Logger", true, true);
+		BinaryInputModule upLimitSwitch = new DigitalBinaryInputModule("up_limit_switch", log, new DigitalInput(0), true);
+		BinaryInputModule downLimitSwitch = new DigitalBinaryInputModule("down_limit_switch", log, new DigitalInput(1), true);
 		testable.chainPut(upLimitSwitch).put(downLimitSwitch);
 		
 		//ARM MOTORS
