@@ -189,8 +189,8 @@ public class Robot extends RobotModule {
 		AxisModule forwardAxis;
 		AxisModule yawAxis;
 		if(RobotConfig.enableDrivetrain) {
-			forwardAxis = new ConfigurableHIDAxisModule("forward_axis", logger, driverController, 1, true, 0.075, 2);
-			yawAxis = new ConfigurableHIDAxisModule("yaw_axis", logger, driverController, 4, false, 0.075, 2);
+			forwardAxis = new ConfigurableHIDAxisModule("forward_axis", logger, driverController, 1, true, 0, 1);
+			yawAxis = new ConfigurableHIDAxisModule("yaw_axis", logger, driverController, 4, false, 0, 2);
 			testable.chainPut(forwardAxis).chainPut(yawAxis);
 		}
 		//SHIFTING
