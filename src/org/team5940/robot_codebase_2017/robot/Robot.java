@@ -175,9 +175,10 @@ public class Robot extends RobotModule {
 		logger.log(this, "HUMAN INTERFACES");
 		//HIDs
 		logger.log(this, "HUMAN INTERFACES - HIDs");
-		GenericHID driverController = new Joystick(0);
+		GenericHID wheelController = new Joystick(0);
+		GenericHID driverController = new Joystick(1);
 		GenericHID mechanismController;
-		if(RobotConfig.isCiabatta) mechanismController = new Joystick(1);
+		if(RobotConfig.isCiabatta) mechanismController = new Joystick(2);
 		//ROBOT DIRECTION
 		logger.log(this, "HUMAN INTERFACES - ROBOT DIRECTION");
 		BinaryInputModule directionSwapButton = new HIDButtonBinaryInputModule("dir_swap_button", logger, driverController, 1, false);
@@ -190,7 +191,7 @@ public class Robot extends RobotModule {
 		AxisModule yawAxis;
 		if(RobotConfig.enableDrivetrain) {
 			forwardAxis = new ConfigurableHIDAxisModule("forward_axis", logger, driverController, 1, true, 0, 1);
-			yawAxis = new ConfigurableHIDAxisModule("yaw_axis", logger, driverController, 4, false, 0, 2);
+			yawAxis = new ConfigurableHIDAxisModule("yaw_axis", logger, wheelController, 0, false, 0, 2);
 			testable.chainPut(forwardAxis).chainPut(yawAxis);
 		}
 		//SHIFTING

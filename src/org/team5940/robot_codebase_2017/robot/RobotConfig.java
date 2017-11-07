@@ -27,7 +27,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should log to files.
 	 */
-	public static final boolean enableFileLog = true;//DEFAULT: true
+	public static final boolean enableFileLog = false;//DEFAULT: true
 	
 	/**
 	 * Configures whether the robot should have a verbose file logging.
@@ -79,7 +79,7 @@ public class RobotConfig {
 	/**
 	 * Configures whether the robot should stream operator cameras.
 	 */
-	public static final boolean enableOpCams = true;//DEFAULT: true
+	public static final boolean enableOpCams = false;//DEFAULT: true
 	
 	//PNEUMATICS
 	/**
